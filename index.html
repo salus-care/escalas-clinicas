@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Escalas Clínicas · Salus Care Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --cyan: #0097B2;
+  --cyan-light: #E0F4F8;
+  --cyan-dark: #006F84;
+  --orange: #E87722;
+  --orange-light: #FEF3E8;
+  --white: #FFFFFF;
+  --gray-50: #F8F9FA;
+  --gray-100: #F1F3F4;
+  --gray-200: #E8EAED;
+  --gray-400: #9AA0A6;
+  --gray-600: #5F6368;
+  --gray-900: #202124;
+  --green: #1E8E3E;
+  --green-bg: #E6F4EA;
+  --yellow: #F9AB00;
+  --yellow-bg: #FEF9E7;
+  --red: #D93025;
+  --red-bg: #FCE8E6;
+  --blue: #1A73E8;
+  --blue-bg: #E8F0FE;
+  --radius: 12px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 3px rgba(0,0,0,.12), 0 1px 2px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.10), 0 2px 6px rgba(0,0,0,.07);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--gray-50);
+  color: var(--gray-900);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+}
+
+/* ── HEADER ── */
+.header {
+  background: var(--cyan);
+  padding: 0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0,0,0,.2);
+}
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 20px;
+}
+.logo { display: flex; align-items: center; gap: 10px; }
+.logo-mark {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.2);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 600; color: white;
+}
+.logo-text { font-size: 16px; font-weight: 600; color: white; line-height: 1.2; }
+.logo-sub { font-size: 11px; color: rgba(255,255,255,.75); font-weight: 400; }
+.header-badge {
+  background: rgba(255,255,255,.2);
+  color: white; font-size: 11px; font-weight: 500;
+  padding: 4px 10px; border-radius: 20px;
+}
+
+/* ── NAV TABS ── */
+.nav-scroll {
+  background: white;
+  border-bottom: 1px solid var(--gray-200);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.nav-scroll::-webkit-scrollbar { display: none; }
+.nav-tabs {
+  display: flex;
+  padding: 0 16px;
+  gap: 0;
+  min-width: max-content;
+}
+.nav-tab {
+  padding: 14px 20px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--gray-600);
+  border: none;
+  background: none;
+  cursor: pointer;
+  border-bottom: 3px solid transparent;
+  transition: all .18s;
+  white-space: nowrap;
+  font-family: inherit;
+}
+.nav-tab:hover { color: var(--cyan); background: var(--cyan-light); }
+.nav-tab.active {
+  color: var(--cyan);
+  border-bottom-color: var(--cyan);
+  font-weight: 600;
+}
+.nav-tab .tab-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--gray-100); color: var(--gray-600);
+  font-size: 11px; margin-left: 6px; font-weight: 600;
+  transition: all .18s;
+}
+.nav-tab.active .tab-num, .nav-tab.done .tab-num {
+  background: var(--cyan); color: white;
+}
+.nav-tab.done .tab-num::after { content: '✓'; }
+
+/* ── MAIN ── */
+.main { padding: 20px 16px 100px; max-width: 720px; margin: 0 auto; }
+
+/* ── PANEL ── */
+.panel { display: none; }
+.panel.active { display: block; }
+
+/* ── SCALE HEADER ── */
+.scale-head {
+  background: white;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.scale-name { font-size: 20px; font-weight: 600; color: var(--gray-900); }
+.scale-desc { font-size: 13px; color: var(--gray-600); margin-top: 4px; }
+.scale-range {
+  display: inline-block;
+  background: var(--cyan-light);
+  color: var(--cyan-dark);
+  font-size: 12px; font-weight: 600;
+  padding: 3px 10px; border-radius: 20px; margin-top: 8px;
+  font-family: 'DM Mono', monospace;
+}
+
+/* ── SCORE STRIP ── */
+.score-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.score-card {
+  background: white;
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+.score-label { font-size: 11px; color: var(--gray-400); font-weight: 500; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+.score-val { font-size: 26px; font-weight: 600; color: var(--gray-900); font-family: 'DM Mono', monospace; }
+.score-val.sm { font-size: 18px; }
+
+/* ── RESULT BOX ── */
+.result-box {
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  border-left: 4px solid;
+}
+.result-box.verde { background: var(--green-bg); color: #1a5c2a; border-color: var(--green); }
+.result-box.amarillo { background: var(--yellow-bg); color: #7a5200; border-color: var(--yellow); }
+.result-box.rojo { background: var(--red-bg); color: #8c1b14; border-color: var(--red); }
+.result-box.gris { background: var(--gray-100); color: var(--gray-600); border-color: var(--gray-400); }
+.result-icon { font-size: 16px; margin-right: 6px; }
+
+/* ── SECTION ── */
+.q-section { margin-bottom: 14px; }
+.q-label {
+  font-size: 12px; font-weight: 600; color: var(--gray-600);
+  text-transform: uppercase; letter-spacing: .4px;
+  margin-bottom: 6px; padding: 0 2px;
+}
+.q-group-head {
+  font-size: 13px; font-weight: 600; color: var(--cyan-dark);
+  padding: 10px 0 6px;
+  border-bottom: 1px solid var(--cyan-light);
+  margin-bottom: 8px;
+}
+
+/* ── OPTIONS ── */
+.opts { display: flex; flex-direction: column; gap: 6px; }
+.opt {
+  display: flex; align-items: center;
+  background: white; border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm); padding: 12px 14px;
+  cursor: pointer; transition: all .15s;
+  -webkit-user-select: none; user-select: none;
+}
+.opt:active { transform: scale(.98); }
+.opt:hover { border-color: var(--cyan); background: var(--cyan-light); }
+.opt.selected { background: var(--cyan-light); border-color: var(--cyan); }
+.opt-radio {
+  width: 20px; height: 20px; border-radius: 50%;
+  border: 2px solid var(--gray-300);
+  margin-right: 12px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .15s;
+}
+.opt.selected .opt-radio { background: var(--cyan); border-color: var(--cyan); }
+.opt-radio-dot { width: 8px; height: 8px; border-radius: 50%; background: white; display: none; }
+.opt.selected .opt-radio-dot { display: block; }
+.opt-text { flex: 1; font-size: 14px; color: var(--gray-900); }
+.opt.selected .opt-text { color: var(--cyan-dark); font-weight: 500; }
+.opt-pts {
+  font-family: 'DM Mono', monospace;
+  font-size: 13px; font-weight: 500;
+  color: var(--gray-400); margin-left: 10px; white-space: nowrap;
+}
+.opt.selected .opt-pts { color: var(--cyan); }
+
+/* ── EVA ── */
+.eva-grid { display: grid; grid-template-columns: repeat(11, 1fr); gap: 6px; margin: 8px 0 16px; }
+.eva-btn {
+  aspect-ratio: 1; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200);
+  background: white; font-size: 17px; font-weight: 600;
+  cursor: pointer; transition: all .15s;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'DM Mono', monospace;
+}
+.eva-btn:active { transform: scale(.92); }
+.eva-btn.sel-0,.eva-btn.sel-1,.eva-btn.sel-2 { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.eva-btn.sel-3,.eva-btn.sel-4 { background: #FEF9E7; border-color: #E2B400; color: #7a5200; }
+.eva-btn.sel-5,.eva-btn.sel-6,.eva-btn.sel-7 { background: var(--orange-light); border-color: var(--orange); color: #8a4300; }
+.eva-btn.sel-8,.eva-btn.sel-9,.eva-btn.sel-10 { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+/* ── INPUT ── */
+.field-input {
+  width: 100%; padding: 12px 14px;
+  border: 1.5px solid var(--gray-200); border-radius: var(--radius-sm);
+  font-size: 14px; font-family: inherit; background: white;
+  color: var(--gray-900); outline: none; transition: border .15s;
+}
+.field-input:focus { border-color: var(--cyan); }
+
+/* ── TOGGLE CHIPS ── */
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 8px 0; }
+.chip {
+  padding: 8px 14px; border-radius: 20px;
+  border: 1.5px solid var(--gray-200);
+  font-size: 13px; background: white; cursor: pointer;
+  font-family: inherit; color: var(--gray-900);
+  transition: all .15s; -webkit-user-select: none;
+}
+.chip.active { background: var(--cyan-light); border-color: var(--cyan); color: var(--cyan-dark); font-weight: 500; }
+
+/* ── PFEIFFER ITEMS ── */
+.pf-item {
+  background: white; border-radius: var(--radius-sm);
+  padding: 14px; margin-bottom: 8px;
+  box-shadow: var(--shadow);
+}
+.pf-q { font-size: 14px; color: var(--gray-900); margin-bottom: 10px; font-weight: 500; }
+.pf-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.pf-btn {
+  padding: 10px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200);
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  font-family: inherit; background: white;
+  transition: all .15s; -webkit-user-select: none;
+}
+.pf-btn.correct.active { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+.pf-btn.incorrect.active { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+
+/* ── GDS ITEM ── */
+.gds-item {
+  background: white; border-radius: var(--radius-sm);
+  padding: 14px; margin-bottom: 8px;
+  box-shadow: var(--shadow);
+}
+.gds-q { font-size: 14px; margin-bottom: 10px; }
+.gds-num { font-family: 'DM Mono', monospace; font-weight: 500; color: var(--cyan); margin-right: 6px; }
+.gds-btns { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.gds-btn {
+  padding: 10px; border-radius: var(--radius-sm);
+  border: 1.5px solid var(--gray-200);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+  font-family: inherit; background: white;
+  transition: all .15s; -webkit-user-select: none;
+  color: var(--gray-900);
+}
+.gds-btn.active-score { background: var(--red-bg); border-color: var(--red); color: var(--red); }
+.gds-btn.active-no-score { background: var(--green-bg); border-color: var(--green); color: var(--green); }
+
+/* ── BOTTOM BAR ── */
+.bottom-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 1px solid var(--gray-200);
+  padding: 12px 16px;
+  display: flex; gap: 10px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,.08);
+  z-index: 99;
+}
+.btn-reset {
+  flex: 1; padding: 13px;
+  border: 1.5px solid var(--gray-200);
+  border-radius: var(--radius-sm);
+  background: white; font-size: 14px; font-weight: 500;
+  cursor: pointer; font-family: inherit; color: var(--gray-600);
+  transition: all .15s;
+}
+.btn-reset:hover { background: var(--gray-100); }
+.btn-copy {
+  flex: 2; padding: 13px;
+  border: none; border-radius: var(--radius-sm);
+  background: var(--cyan); color: white;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer; font-family: inherit;
+  transition: all .15s;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.btn-copy:hover { background: var(--cyan-dark); }
+.btn-copy:active { transform: scale(.98); }
+.copy-icon { font-size: 16px; }
+
+/* ── TOAST ── */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+  background: var(--gray-900); color: white;
+  padding: 12px 24px; border-radius: 24px;
+  font-size: 14px; font-weight: 500;
+  opacity: 0; transition: opacity .3s;
+  pointer-events: none; z-index: 200;
+  white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+
+/* ── ADJUST ── */
+.adjust-row {
+  display: flex; align-items: center; gap: 10px;
+  background: white; border-radius: var(--radius-sm);
+  padding: 12px 14px; margin-bottom: 10px;
+  box-shadow: var(--shadow);
+}
+.adjust-label { flex: 1; font-size: 14px; }
+.adjust-note { font-size: 12px; color: var(--gray-600); margin-bottom: 12px; }
+
+/* ── TABLET responsive ── */
+@media (max-width: 480px) {
+  .eva-grid { gap: 4px; }
+  .eva-btn { font-size: 15px; }
+  .score-val { font-size: 22px; }
+  .nav-tab { padding: 12px 14px; font-size: 12px; }
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="header-inner">
+    <div class="logo">
+      <div class="logo-mark">S</div>
+      <div>
+        <div class="logo-text">Salus Care Solutions</div>
+        <div class="logo-sub">Escalas Clínicas · Valoración Integral</div>
+      </div>
+    </div>
+    <div class="header-badge">v1.0</div>
+  </div>
+</header>
+
+<!-- NAV TABS -->
+<div class="nav-scroll">
+  <div class="nav-tabs" id="navTabs">
+    <button class="nav-tab active" data-panel="barthel">Barthel <span class="tab-num" id="tn-barthel">10</span></button>
+    <button class="nav-tab" data-panel="tinetti">Tinetti <span class="tab-num" id="tn-tinetti">18</span></button>
+    <button class="nav-tab" data-panel="glasgow">Glasgow <span class="tab-num" id="tn-glasgow">3</span></button>
+    <button class="nav-tab" data-panel="eva">EVA Dolor <span class="tab-num" id="tn-eva">—</span></button>
+    <button class="nav-tab" data-panel="norton">Norton <span class="tab-num" id="tn-norton">5</span></button>
+    <button class="nav-tab" data-panel="pfeiffer">Pfeiffer <span class="tab-num" id="tn-pfeiffer">10</span></button>
+    <button class="nav-tab" data-panel="gds">GDS-15 <span class="tab-num" id="tn-gds">15</span></button>
+  </div>
+</div>
+
+<main class="main">
+
+<!-- ══════════════════ BARTHEL ══════════════════ -->
+<div class="panel active" id="panel-barthel">
+  <div class="scale-head">
+    <div class="scale-name">Índice de Barthel</div>
+    <div class="scale-desc">Independencia en actividades básicas de la vida diaria (AVDI)</div>
+    <div class="scale-range">0 – 100 puntos · Mayor puntaje = mayor independencia</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Puntaje</div><div class="score-val" id="b-total">0</div></div>
+    <div class="score-card"><div class="score-label">Ítems completados</div><div class="score-val sm" id="b-items">0 / 10</div></div>
+  </div>
+  <div class="result-box gris" id="b-result">Selecciona una opción por cada ítem.</div>
+  <div id="b-items-list"></div>
+</div>
+
+<!-- ══════════════════ TINETTI ══════════════════ -->
+<div class="panel" id="panel-tinetti">
+  <div class="scale-head">
+    <div class="scale-name">Escala de Tinetti</div>
+    <div class="scale-desc">Evaluación del equilibrio y la marcha — riesgo de caída</div>
+    <div class="scale-range">0 – 28 puntos · Mayor puntaje = menor riesgo</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Total</div><div class="score-val" id="t-total">0</div></div>
+    <div class="score-card"><div class="score-label">Equilibrio</div><div class="score-val sm" id="t-eq">0 / 16</div></div>
+    <div class="score-card"><div class="score-label">Marcha</div><div class="score-val sm" id="t-ma">0 / 12</div></div>
+  </div>
+  <div class="result-box gris" id="t-result">Selecciona una opción por cada ítem.</div>
+  <div id="t-items-list"></div>
+</div>
+
+<!-- ══════════════════ GLASGOW ══════════════════ -->
+<div class="panel" id="panel-glasgow">
+  <div class="scale-head">
+    <div class="scale-name">Escala de Glasgow</div>
+    <div class="scale-desc">Nivel de conciencia — apertura ocular, respuesta verbal y motora</div>
+    <div class="scale-range">3 – 15 puntos · 15 = consciente y orientado</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Total</div><div class="score-val" id="g-total">—</div></div>
+    <div class="score-card"><div class="score-label">Ocular (E)</div><div class="score-val sm" id="g-e">—</div></div>
+    <div class="score-card"><div class="score-label">Verbal (V)</div><div class="score-val sm" id="g-v">—</div></div>
+    <div class="score-card"><div class="score-label">Motor (M)</div><div class="score-val sm" id="g-m">—</div></div>
+  </div>
+  <div class="result-box gris" id="g-result">Selecciona una respuesta en cada componente.</div>
+  <div id="g-items-list"></div>
+</div>
+
+<!-- ══════════════════ EVA ══════════════════ -->
+<div class="panel" id="panel-eva">
+  <div class="scale-head">
+    <div class="scale-name">Escala Visual Analógica — EVA</div>
+    <div class="scale-desc">Intensidad subjetiva del dolor referido por el paciente</div>
+    <div class="scale-range">0 = sin dolor · 10 = dolor máximo imaginable</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Nivel de dolor</div><div class="score-val" id="eva-total">—</div></div>
+    <div class="score-card"><div class="score-label">Categoría</div><div class="score-val sm" id="eva-cat">—</div></div>
+  </div>
+  <div class="result-box gris" id="eva-result">Toca el número que representa el dolor del paciente.</div>
+
+  <div class="q-section">
+    <div class="q-label">Nivel de dolor (0 – 10)</div>
+    <div class="eva-grid" id="evaGrid"></div>
+  </div>
+
+  <div class="q-section">
+    <div class="q-label">Localización del dolor</div>
+    <input class="field-input" id="eva-loc" type="text" placeholder="Ej: región lumbar, rodilla derecha...">
+  </div>
+
+  <div class="q-section">
+    <div class="q-label">¿Impacta alguna de estas áreas?</div>
+    <div class="chips">
+      <button class="chip" onclick="toggleChip(this,'eva-impact','sueño')">Sueño</button>
+      <button class="chip" onclick="toggleChip(this,'eva-impact','movilización')">Movilización</button>
+      <button class="chip" onclick="toggleChip(this,'eva-impact','ánimo')">Ánimo</button>
+      <button class="chip" onclick="toggleChip(this,'eva-impact','alimentación')">Alimentación</button>
+      <button class="chip" onclick="toggleChip(this,'eva-impact','ninguno')">Ninguno</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════ NORTON ══════════════════ -->
+<div class="panel" id="panel-norton">
+  <div class="scale-head">
+    <div class="scale-name">Escala de Norton</div>
+    <div class="scale-desc">Riesgo de lesiones por presión (úlceras por presión — UPP)</div>
+    <div class="scale-range">5 – 20 puntos · Menor puntaje = mayor riesgo de UPP</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Puntaje Norton</div><div class="score-val" id="n-total">—</div></div>
+    <div class="score-card"><div class="score-label">Nivel de riesgo</div><div class="score-val sm" id="n-risk">—</div></div>
+  </div>
+  <div class="result-box gris" id="n-result">Selecciona una opción por cada categoría.</div>
+  <div id="n-items-list"></div>
+</div>
+
+<!-- ══════════════════ PFEIFFER ══════════════════ -->
+<div class="panel" id="panel-pfeiffer">
+  <div class="scale-head">
+    <div class="scale-name">Escala de Pfeiffer (SPMSQ)</div>
+    <div class="scale-desc">Tamizaje rápido de deterioro cognitivo — se cuentan los errores</div>
+    <div class="scale-range">0 – 10 errores · Más errores = mayor deterioro</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Errores</div><div class="score-val" id="pf-total">0</div></div>
+    <div class="score-card"><div class="score-label">Respondidas</div><div class="score-val sm" id="pf-items">0 / 10</div></div>
+  </div>
+  <div class="result-box gris" id="pf-result">Marca la respuesta de cada pregunta.</div>
+
+  <div class="adjust-row">
+    <div class="adjust-label">Ajuste por nivel educativo:</div>
+    <div class="chips" style="margin:0">
+      <button class="chip active" id="pf-edu-bajo" onclick="setPfEdu('bajo')">Básica o menos</button>
+      <button class="chip" id="pf-edu-alto" onclick="setPfEdu('alto')">Media / Superior</button>
+    </div>
+  </div>
+  <div class="adjust-note" id="pf-edu-note">Con educación básica o menos, se permite 1 error adicional antes de clasificar deterioro.</div>
+  <div id="pf-items-list"></div>
+</div>
+
+<!-- ══════════════════ GDS-15 ══════════════════ -->
+<div class="panel" id="panel-gds">
+  <div class="scale-head">
+    <div class="scale-name">Escala GDS-15</div>
+    <div class="scale-desc">Tamizaje de depresión en adultos mayores (Geriatric Depression Scale)</div>
+    <div class="scale-range">0 – 15 puntos · Mayor puntaje = mayor probabilidad de depresión</div>
+  </div>
+  <div class="score-strip">
+    <div class="score-card"><div class="score-label">Puntaje</div><div class="score-val" id="gds-total">0</div></div>
+    <div class="score-card"><div class="score-label">Respondidas</div><div class="score-val sm" id="gds-items">0 / 15</div></div>
+  </div>
+  <div class="result-box gris" id="gds-result">Responde en base a cómo se sintió el paciente en la última semana.</div>
+  <p style="font-size:13px;color:#5F6368;margin-bottom:14px;line-height:1.6">Las respuestas marcadas en <strong style="color:#D93025">rojo</strong> suman 1 punto. Las marcadas en <strong style="color:#1E8E3E">verde</strong> no suman.</p>
+  <div id="gds-items-list"></div>
+</div>
+
+</main>
+
+<!-- BOTTOM BAR -->
+<div class="bottom-bar">
+  <button class="btn-reset" id="btnReset" onclick="resetCurrent()">↺ Reiniciar</button>
+  <button class="btn-copy" id="btnCopy" onclick="copyCurrent()">
+    <span class="copy-icon">⎘</span> Copiar resultado para pegar en formato
+  </button>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✓ Resultado copiado — pégalo en la Sección IX del formato</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+//  DATOS
+// ══════════════════════════════════════════════════════════════════
+const BARTHEL_DEF = [
+  {id:'bano',    label:'Baño / ducha',              opts:[['Independiente (sin supervisión)',5],['Dependiente',0]]},
+  {id:'vestido', label:'Vestido y calzado',          opts:[['Independiente',10],['Necesita ayuda pero hace más del 50%',5],['Dependiente',0]]},
+  {id:'aseo',    label:'Aseo personal (cara, dientes, peinado)', opts:[['Independiente (incluye accesorios)',5],['Dependiente',0]]},
+  {id:'wc',      label:'Uso del retrete',            opts:[['Independiente',10],['Necesita ayuda',5],['Dependiente',0]]},
+  {id:'desp',    label:'Desplazamiento (marcha)',     opts:[['Independiente ≥ 50 m (puede usar bastón)',15],['Ayuda verbal o supervisión ≥ 50 m',10],['Independiente en silla de ruedas ≥ 50 m',5],['Dependiente',0]]},
+  {id:'escalera',label:'Subir y bajar escaleras',    opts:[['Independiente',10],['Necesita ayuda o supervisión',5],['Dependiente',0]]},
+  {id:'transf',  label:'Transferencia silla–cama',   opts:[['Independiente',15],['Supervisión o pequeña ayuda',10],['Requiere gran ayuda de una persona',5],['Dependiente (no mantiene sedestación)',0]]},
+  {id:'aliment', label:'Alimentación',               opts:[['Independiente (incluye cortar y untar)',10],['Necesita ayuda (cortar, untar, etc.)',5],['Dependiente',0]]},
+  {id:'contU',   label:'Continencia urinaria',       opts:[['Continente (o sondaje autogestionado)',10],['Accidente ocasional (1×semana o sondaje con ayuda)',5],['Incontinente',0]]},
+  {id:'contF',   label:'Continencia fecal',          opts:[['Continente',10],['Accidente ocasional (1×semana)',5],['Incontinente',0]]},
+];
+
+const TINETTI_EQ_DEF = [
+  {id:'te1',label:'Equilibrio sentado',             opts:[['Se inclina o desliza',0],['Estable y seguro',1]]},
+  {id:'te2',label:'Levantarse de la silla',          opts:[['Incapaz sin ayuda',0],['Capaz, usa brazos o más de 1 intento',1],['Capaz de un solo intento sin usar brazos',2]]},
+  {id:'te3',label:'Intentos para levantarse',        opts:[['Incapaz sin ayuda',0],['Capaz pero requiere más de 1 intento',1],['Capaz a la primera',2]]},
+  {id:'te4',label:'Equilibrio inmediato (primeros 5 s)', opts:[['Inestable (tambalea, mueve pies, marcado balanceo)',0],['Estable con apoyo o bastón',1],['Estable sin apoyo',2]]},
+  {id:'te5',label:'Equilibrio de pie (ojos abiertos)', opts:[['Inestable',0],['Estable con apoyo amplio o bastón',1],['Estable sin ayuda, base estrecha',2]]},
+  {id:'te6',label:'Prueba de empuje (esternón ×3)', opts:[['Cae',0],['Agarra o tambalea y se agarra',1],['Estable',2]]},
+  {id:'te7',label:'Equilibrio con ojos cerrados',    opts:[['Inestable',0],['Estable',1]]},
+  {id:'te8',label:'Giro 360° — continuidad',         opts:[['Pasos discontinuos',0],['Pasos continuos',1]]},
+  {id:'te9',label:'Giro 360° — estabilidad',         opts:[['Inestable (agarra, tambalea)',0],['Estable',1]]},
+  {id:'te10',label:'Sentarse',                       opts:[['Inseguro (cae, distancia mal calculada)',0],['Usa brazos o movimiento brusco',1],['Seguro y suave',2]]},
+];
+const TINETTI_MA_DEF = [
+  {id:'tm1',label:'Inicio de la marcha',             opts:[['Duda o varios intentos',0],['Sin duda, inicio fluido',1]]},
+  {id:'tm2',label:'Longitud del paso — pie derecho', opts:[['Pie D no sobrepasa al I',0],['Pie D sobrepasa al I',1]]},
+  {id:'tm3',label:'Altura del paso — pie derecho',   opts:[['Pie D no se eleva del suelo',0],['Pie D se eleva claramente',1]]},
+  {id:'tm4',label:'Longitud del paso — pie izquierdo',opts:[['Pie I no sobrepasa al D',0],['Pie I sobrepasa al D',1]]},
+  {id:'tm5',label:'Altura del paso — pie izquierdo', opts:[['Pie I no se eleva del suelo',0],['Pie I se eleva claramente',1]]},
+  {id:'tm6',label:'Simetría del paso',               opts:[['Longitud derecha ≠ izquierda',0],['Longitud derecha ≈ izquierda',1]]},
+  {id:'tm7',label:'Continuidad de los pasos',        opts:[['Pauses o discontinuidad',0],['Pasos continuos',1]]},
+  {id:'tm8',label:'Trayectoria (3 metros)',           opts:[['Desviación marcada',0],['Desviación leve o usa ayuda',1],['Sin desviación y sin ayuda',2]]},
+  {id:'tm9',label:'Tronco durante la marcha',        opts:[['Balanceo marcado o usa ayuda',0],['Rodillas o espalda flexionadas, brazos separados',1],['Sin balanceo, sin flexión, sin uso de brazos',2]]},
+  {id:'tm10',label:'Distancia entre talones (base)', opts:[['Talones muy separados',0],['Talones casi juntos al caminar',1]]},
+];
+
+const GLASGOW_DEF = [
+  {id:'E', label:'Apertura ocular', opts:[['Espontánea',4],['A la voz',3],['Al dolor',2],['Sin respuesta',1]]},
+  {id:'V', label:'Respuesta verbal', opts:[['Orientada y fluida',5],['Confusa',4],['Palabras inapropiadas',3],['Sonidos incomprensibles',2],['Sin respuesta',1]]},
+  {id:'M', label:'Respuesta motora', opts:[['Obedece órdenes verbales',6],['Localiza el estímulo doloroso',5],['Retirada al dolor (flexión normal)',4],['Flexión anormal — decorticación',3],['Extensión anormal — descerebración',2],['Sin respuesta',1]]},
+];
+
+const NORTON_DEF = [
+  {id:'nc', label:'Condición física general', opts:[['Buena',4],['Regular',3],['Mala',2],['Muy mala',1]]},
+  {id:'nm', label:'Estado mental',            opts:[['Alerta',4],['Apático',3],['Confuso',2],['Inconsciente / estuporoso',1]]},
+  {id:'na', label:'Actividad física',         opts:[['Deambula sin ayuda',4],['Deambula con ayuda',3],['Limitado a silla de ruedas',2],['En cama',1]]},
+  {id:'nmo',label:'Movilidad',                opts:[['Total (sin limitación)',4],['Ligeramente limitada',3],['Muy limitada',2],['Inmóvil',1]]},
+  {id:'ni', label:'Incontinencia',            opts:[['Ninguna',4],['Ocasional urinaria',3],['Urinaria habitual',2],['Doble (urinaria + fecal)',1]]},
+];
+
+const PFEIFFER_DEF = [
+  '¿Cuál es la fecha de hoy? (día, mes y año)',
+  '¿Qué día de la semana es hoy?',
+  '¿Cómo se llama este lugar?',
+  '¿Cuál es su número de teléfono? (o su dirección si no tiene teléfono)',
+  '¿Cuántos años tiene usted?',
+  '¿Cuándo nació? (fecha de nacimiento)',
+  '¿Quién es el presidente o jefe de gobierno de México actualmente?',
+  '¿Quién fue el presidente antes de él?',
+  '¿Cuál es el primer apellido de su mamá?',
+  'Reste de 3 en 3 comenzando desde 20 (20, 17, 14...)',
+];
+
+const GDS_DEF = [
+  {q:'¿Está usted satisfecho/a con su vida?', pts:'No'},
+  {q:'¿Ha dejado de hacer muchas de sus actividades e intereses?', pts:'Sí'},
+  {q:'¿Siente que su vida está vacía?', pts:'Sí'},
+  {q:'¿Se siente aburrido/a con frecuencia?', pts:'Sí'},
+  {q:'¿Está usted de buen ánimo la mayor parte del tiempo?', pts:'No'},
+  {q:'¿Tiene miedo de que algo malo le va a pasar?', pts:'Sí'},
+  {q:'¿Se siente feliz la mayor parte del tiempo?', pts:'No'},
+  {q:'¿Se siente frecuentemente desamparado/a o sin esperanza?', pts:'Sí'},
+  {q:'¿Prefiere quedarse en casa más que salir a hacer cosas nuevas?', pts:'Sí'},
+  {q:'¿Cree usted que tiene más problemas con su memoria que la mayoría?', pts:'Sí'},
+  {q:'¿Cree que es maravilloso estar vivo/a en este momento?', pts:'No'},
+  {q:'¿Se siente inútil tal como está usted ahora?', pts:'Sí'},
+  {q:'¿Se siente lleno/a de energía?', pts:'No'},
+  {q:'¿Siente que su situación actual no tiene esperanza?', pts:'Sí'},
+  {q:'¿Cree que la mayoría de la gente está mejor que usted?', pts:'Sí'},
+];
+
+// ══════════════════════════════════════════════════════════════════
+//  ESTADO
+// ══════════════════════════════════════════════════════════════════
+const S = {
+  barthel:{}, tinetti:{}, glasgow:{E:null,V:null,M:null},
+  eva:{score:null,loc:'',impact:[]},
+  norton:{}, pfeiffer:{}, gds:{}, pfEdu:'bajo'
+};
+let currentPanel = 'barthel';
+
+// ══════════════════════════════════════════════════════════════════
+//  RENDER GENÉRICO
+// ══════════════════════════════════════════════════════════════════
+function renderOpts(containerId, items, stateKey, onUpdate, groupLabel) {
+  const c = document.getElementById(containerId);
+  c.innerHTML = '';
+  if(groupLabel) {
+    const gh = document.createElement('div');
+    gh.className='q-group-head'; gh.textContent=groupLabel; c.appendChild(gh);
+  }
+  items.forEach(item => {
+    const sec = document.createElement('div');
+    sec.className='q-section';
+    const lbl = document.createElement('div');
+    lbl.className='q-label'; lbl.textContent=item.label; sec.appendChild(lbl);
+    const opts = document.createElement('div');
+    opts.className='opts';
+    item.opts.forEach(([text, pts]) => {
+      const el = document.createElement('div');
+      el.className='opt' + (S[stateKey][item.id]===pts ? ' selected' : '');
+      el.innerHTML=`<div class="opt-radio"><div class="opt-radio-dot"></div></div><div class="opt-text">${text}</div><div class="opt-pts">${pts} pt${pts!==1?'s':''}</div>`;
+      el.onclick=()=>{
+        opts.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));
+        el.classList.add('selected');
+        S[stateKey][item.id]=pts;
+        onUpdate();
+      };
+      opts.appendChild(el);
+    });
+    sec.appendChild(opts);
+    c.appendChild(sec);
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  BARTHEL
+// ══════════════════════════════════════════════════════════════════
+function initBarthel() {
+  renderOpts('b-items-list', BARTHEL_DEF, 'barthel', updateBarthel);
+  updateBarthel();
+}
+function updateBarthel() {
+  const v=Object.values(S.barthel), total=v.reduce((a,b)=>a+b,0), n=v.length;
+  document.getElementById('b-total').textContent=total;
+  document.getElementById('b-items').textContent=n+' / 10';
+  document.getElementById('tn-barthel').textContent=total;
+  const r=document.getElementById('b-result');
+  if(!n){r.className='result-box gris';r.textContent='Selecciona una opción por cada ítem.';return;}
+  let txt,cls;
+  if(total>=90){cls='verde';txt=`Barthel ${total}/100 — Independencia total o dependencia leve. Puede requerir supervisión ocasional. Perfil Cuidador puede ser suficiente.`;}
+  else if(total>=60){cls='amarillo';txt=`Barthel ${total}/100 — Dependencia moderada. Necesita ayuda en baño, vestido e higiene. Perfil Auxiliar de Enfermería recomendado.`;}
+  else if(total>=20){cls='rojo';txt=`Barthel ${total}/100 — Dependencia grave. Necesita asistencia en la mayoría de AVDI. Perfil Auxiliar de Enfermería con supervisión de Lic. en Enfermería.`;}
+  else{cls='rojo';txt=`Barthel ${total}/100 — Dependencia total. Requiere asistencia completa en todas las AVDI. Perfil mínimo Licenciada en Enfermería.`;}
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  TINETTI
+// ══════════════════════════════════════════════════════════════════
+function initTinetti() {
+  const c=document.getElementById('t-items-list'); c.innerHTML='';
+  const eqSec=document.createElement('div');
+  const gh1=document.createElement('div');gh1.className='q-group-head';gh1.textContent='Parte A — Equilibrio (máx. 16 pts)';eqSec.appendChild(gh1);
+  TINETTI_EQ_DEF.forEach(item=>{
+    const sec=document.createElement('div');sec.className='q-section';
+    const lbl=document.createElement('div');lbl.className='q-label';lbl.textContent=item.label;sec.appendChild(lbl);
+    const opts=document.createElement('div');opts.className='opts';
+    item.opts.forEach(([text,pts])=>{
+      const el=document.createElement('div');
+      el.className='opt'+(S.tinetti[item.id]===pts?' selected':'');
+      el.innerHTML=`<div class="opt-radio"><div class="opt-radio-dot"></div></div><div class="opt-text">${text}</div><div class="opt-pts">${pts} pt${pts!==1?'s':''}</div>`;
+      el.onclick=()=>{opts.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');S.tinetti[item.id]=pts;updateTinetti();};
+      opts.appendChild(el);
+    });
+    sec.appendChild(opts);eqSec.appendChild(sec);
+  });
+  c.appendChild(eqSec);
+
+  const maSec=document.createElement('div');
+  const gh2=document.createElement('div');gh2.className='q-group-head';gh2.textContent='Parte B — Marcha (máx. 12 pts)';maSec.appendChild(gh2);
+  TINETTI_MA_DEF.forEach(item=>{
+    const sec=document.createElement('div');sec.className='q-section';
+    const lbl=document.createElement('div');lbl.className='q-label';lbl.textContent=item.label;sec.appendChild(lbl);
+    const opts=document.createElement('div');opts.className='opts';
+    item.opts.forEach(([text,pts])=>{
+      const el=document.createElement('div');
+      el.className='opt'+(S.tinetti[item.id]===pts?' selected':'');
+      el.innerHTML=`<div class="opt-radio"><div class="opt-radio-dot"></div></div><div class="opt-text">${text}</div><div class="opt-pts">${pts} pt${pts!==1?'s':''}</div>`;
+      el.onclick=()=>{opts.querySelectorAll('.opt').forEach(o=>o.classList.remove('selected'));el.classList.add('selected');S.tinetti[item.id]=pts;updateTinetti();};
+      opts.appendChild(el);
+    });
+    sec.appendChild(opts);maSec.appendChild(sec);
+  });
+  c.appendChild(maSec);
+  updateTinetti();
+}
+function updateTinetti(){
+  const eqV=TINETTI_EQ_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
+  const maV=TINETTI_MA_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
+  const eq=eqV.reduce((a,b)=>a+b,0), ma=maV.reduce((a,b)=>a+b,0), total=eq+ma;
+  document.getElementById('t-total').textContent=total;
+  document.getElementById('t-eq').textContent=eq+' / 16';
+  document.getElementById('t-ma').textContent=ma+' / 12';
+  document.getElementById('tn-tinetti').textContent=total;
+  const r=document.getElementById('t-result');
+  if(!eqV.length&&!maV.length){r.className='result-box gris';r.textContent='Selecciona una opción por cada ítem.';return;}
+  let txt,cls;
+  if(total>=24){cls='verde';txt=`Tinetti ${total}/28 — Riesgo bajo de caída. Marcha y equilibrio dentro de parámetros normales. Vigilancia estándar.`;}
+  else if(total>=19){cls='amarillo';txt=`Tinetti ${total}/28 — Riesgo moderado de caída. Supervisar todos los traslados, exigir uso de ayuda técnica y evaluar el entorno domiciliario.`;}
+  else{cls='rojo';txt=`Tinetti ${total}/28 — Riesgo alto de caída. Asistencia física obligatoria en todos los desplazamientos. Protocolo estricto de prevención de caídas activo.`;}
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  GLASGOW
+// ══════════════════════════════════════════════════════════════════
+function initGlasgow(){
+  renderOpts('g-items-list', GLASGOW_DEF, 'glasgow', updateGlasgow);
+  updateGlasgow();
+}
+function updateGlasgow(){
+  const {E,V,M}=S.glasgow;
+  document.getElementById('g-e').textContent=E??'—';
+  document.getElementById('g-v').textContent=V??'—';
+  document.getElementById('g-m').textContent=M??'—';
+  const r=document.getElementById('g-result');
+  if(E===null||V===null||M===null){document.getElementById('g-total').textContent='—';r.className='result-box gris';r.textContent='Selecciona una respuesta en cada componente.';return;}
+  const total=E+V+M;
+  document.getElementById('g-total').textContent=total;
+  document.getElementById('tn-glasgow').textContent=total;
+  let txt,cls;
+  if(total===15){cls='verde';txt=`Glasgow ${total}/15 — Paciente alerta y orientado. Sin alteración del nivel de conciencia al momento de la valoración.`;}
+  else if(total>=13){cls='amarillo';txt=`Glasgow ${total}/15 — Deterioro leve del nivel de conciencia. Monitoreo continuo. Si V ≤ 4, riesgo aumentado de broncoaspiración.`;}
+  else if(total>=9){cls='rojo';txt=`Glasgow ${total}/15 — Deterioro moderado. Requiere vigilancia estrecha, posicionamiento seguro y protocolo de manejo de secreciones.`;}
+  else{cls='rojo';txt=`Glasgow ${total}/15 — Deterioro grave. Comunicar urgentemente al médico tratante. Paciente no puede participar en decisiones.`;}
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  EVA
+// ══════════════════════════════════════════════════════════════════
+function initEva(){
+  const g=document.getElementById('evaGrid'); g.innerHTML='';
+  for(let i=0;i<=10;i++){
+    const btn=document.createElement('button');
+    btn.className='eva-btn'; btn.textContent=i;
+    if(S.eva.score===i) btn.classList.add(`sel-${i}`);
+    btn.onclick=()=>{
+      g.querySelectorAll('.eva-btn').forEach(b=>{b.className='eva-btn';});
+      btn.classList.add(`sel-${i}`);
+      S.eva.score=i; updateEva();
+    };
+    g.appendChild(btn);
+  }
+  updateEva();
+}
+function updateEva(){
+  const s=S.eva.score;
+  const r=document.getElementById('eva-result');
+  if(s===null){document.getElementById('eva-total').textContent='—';document.getElementById('eva-cat').textContent='—';r.className='result-box gris';r.textContent='Toca el número que representa el dolor del paciente.';return;}
+  document.getElementById('eva-total').textContent=s+'/10';
+  document.getElementById('tn-eva').textContent=s;
+  let cat,txt,cls;
+  if(s===0){cat='Sin dolor';cls='verde';txt='EVA 0/10 — Sin dolor referido ni signos conductuales de dolor durante la valoración. Registrar si cambia en el turno.';}
+  else if(s<=3){cat='Leve';cls='verde';txt=`EVA ${s}/10 — Dolor leve. El paciente puede realizar actividades con molestia. Registrar frecuencia, localización y posibles desencadenantes.`;}
+  else if(s<=6){cat='Moderado';cls='amarillo';txt=`EVA ${s}/10 — Dolor moderado. Puede interferir con actividades, descanso y movilización. Reportar al médico tratante si no hay analgesia prescrita.`;}
+  else{cat='Severo';cls='rojo';txt=`EVA ${s}/10 — Dolor severo. Requiere evaluación médica urgente y ajuste de analgesia. Registrar horario exacto y reportar a coordinación clínica.`;}
+  document.getElementById('eva-cat').textContent=cat;
+  r.className='result-box '+cls; r.textContent=txt;
+}
+function toggleChip(btn, group, val){
+  btn.classList.toggle('active');
+  if(!S.eva.impact) S.eva.impact=[];
+  if(btn.classList.contains('active')){if(!S.eva.impact.includes(val))S.eva.impact.push(val);}
+  else{S.eva.impact=S.eva.impact.filter(v=>v!==val);}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  NORTON
+// ══════════════════════════════════════════════════════════════════
+function initNorton(){
+  renderOpts('n-items-list', NORTON_DEF, 'norton', updateNorton);
+  updateNorton();
+}
+function updateNorton(){
+  const v=Object.values(S.norton);
+  if(!v.length){document.getElementById('n-total').textContent='—';document.getElementById('n-risk').textContent='—';document.getElementById('n-result').className='result-box gris';document.getElementById('n-result').textContent='Selecciona una opción por cada categoría.';return;}
+  const total=v.reduce((a,b)=>a+b,0);
+  document.getElementById('n-total').textContent=total;
+  document.getElementById('tn-norton').textContent=total;
+  const r=document.getElementById('n-result');
+  let risk,txt,cls;
+  if(total>=18){risk='Sin riesgo';cls='verde';txt=`Norton ${total}/20 — Sin riesgo de UPP. Revisión cutánea de rutina. Mantener hidratación y movilización activa.`;}
+  else if(total>=14){risk='Riesgo leve';cls='amarillo';txt=`Norton ${total}/20 — Riesgo leve. Cambios posturales cada 4 h, revisión de zonas de presión, hidratación adecuada.`;}
+  else if(total>=10){risk='Riesgo medio-alto';cls='rojo';txt=`Norton ${total}/20 — Riesgo medio-alto. Cambios posturales cada 2 h, colchón antiescaras, registro diario de integridad cutánea.`;}
+  else{risk='Riesgo muy alto';cls='rojo';txt=`Norton ${total}/20 — Riesgo muy alto. Protocolo intensivo: cambios posturales cada 1-2 h, colchón de presión alterna, apósitos preventivos en prominencias óseas.`;}
+  document.getElementById('n-risk').textContent=risk;
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  PFEIFFER
+// ══════════════════════════════════════════════════════════════════
+function initPfeiffer(){
+  const c=document.getElementById('pf-items-list'); c.innerHTML='';
+  PFEIFFER_DEF.forEach((q,i)=>{
+    const id='pf'+i;
+    const card=document.createElement('div');card.className='pf-item';
+    card.innerHTML=`<div class="pf-q"><span style="font-family:'DM Mono',monospace;color:#0097B2;font-weight:600">${i+1}.</span> ${q}</div>`;
+    const btns=document.createElement('div');btns.className='pf-btns';
+    [['✓ Correcta','correct'],['✗ Incorrecta','incorrect']].forEach(([label,type])=>{
+      const btn=document.createElement('button');
+      btn.className='pf-btn '+type;btn.textContent=label;
+      const val=type==='incorrect'?1:0;
+      if(S.pfeiffer[id]===val)btn.classList.add('active');
+      btn.onclick=()=>{
+        btns.querySelectorAll('.pf-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');S.pfeiffer[id]=val;updatePfeiffer();
+      };
+      btns.appendChild(btn);
+    });
+    card.appendChild(btns);c.appendChild(card);
+  });
+  updatePfeiffer();
+}
+function setPfEdu(level){
+  S.pfEdu=level;
+  document.getElementById('pf-edu-bajo').classList.toggle('active',level==='bajo');
+  document.getElementById('pf-edu-alto').classList.toggle('active',level==='alto');
+  document.getElementById('pf-edu-note').textContent=level==='bajo'?'Con educación básica o menos, se permite 1 error adicional antes de clasificar deterioro.':'Sin ajuste educativo aplicado.';
+  updatePfeiffer();
+}
+function updatePfeiffer(){
+  const v=Object.values(S.pfeiffer);
+  const errores=v.reduce((a,b)=>a+b,0), n=v.length;
+  document.getElementById('pf-total').textContent=errores;
+  document.getElementById('pf-items').textContent=n+' / 10';
+  document.getElementById('tn-pfeiffer').textContent=errores+' err';
+  const r=document.getElementById('pf-result');
+  if(!n){r.className='result-box gris';r.textContent='Marca la respuesta de cada pregunta.';return;}
+  const adj=S.pfEdu==='bajo'?1:0;
+  const eAdj=errores-adj;
+  let txt,cls;
+  if(eAdj<=2){cls='verde';txt=`Pfeiffer: ${errores} errores — Función cognitiva intacta. Sin deterioro cognitivo detectado en este tamizaje.`;}
+  else if(eAdj<=4){cls='amarillo';txt=`Pfeiffer: ${errores} errores — Deterioro cognitivo leve. El paciente puede tener dificultad para gestionar medicamentos de forma autónoma. Requiere supervisión.`;}
+  else if(eAdj<=7){cls='rojo';txt=`Pfeiffer: ${errores} errores — Deterioro cognitivo moderado. Necesita apoyo en toma de decisiones. Informar a la familia y considerar evaluación neurológica formal.`;}
+  else{cls='rojo';txt=`Pfeiffer: ${errores} errores — Deterioro cognitivo severo. No puede participar en decisiones de su cuidado. Documentar quién es el responsable legal o familiar que decide.`;}
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  GDS-15
+// ══════════════════════════════════════════════════════════════════
+function initGds(){
+  const c=document.getElementById('gds-items-list'); c.innerHTML='';
+  GDS_DEF.forEach((item,i)=>{
+    const id='gds'+i;
+    const card=document.createElement('div');card.className='gds-item';
+    card.innerHTML=`<div class="gds-q"><span class="gds-num">${i+1}.</span>${item.q}</div>`;
+    const btns=document.createElement('div');btns.className='gds-btns';
+    ['Sí','No'].forEach(resp=>{
+      const puntua=resp===item.pts;
+      const btn=document.createElement('button');btn.className='gds-btn';btn.textContent=resp;
+      const val=puntua?1:0;
+      if(S.gds[id]===val) btn.classList.add(puntua?'active-score':'active-no-score');
+      btn.onclick=()=>{
+        btns.querySelectorAll('.gds-btn').forEach(b=>b.className='gds-btn');
+        btn.classList.add(puntua?'active-score':'active-no-score');
+        S.gds[id]=val;updateGds();
+      };
+      btns.appendChild(btn);
+    });
+    card.appendChild(btns);c.appendChild(card);
+  });
+  updateGds();
+}
+function updateGds(){
+  const v=Object.values(S.gds), total=v.reduce((a,b)=>a+b,0), n=v.length;
+  document.getElementById('gds-total').textContent=total;
+  document.getElementById('gds-items').textContent=n+' / 15';
+  document.getElementById('tn-gds').textContent=total;
+  const r=document.getElementById('gds-result');
+  if(!n){r.className='result-box gris';r.textContent='Responde en base a cómo se sintió el paciente en la última semana.';return;}
+  let txt,cls;
+  if(total<=5){cls='verde';txt=`GDS-15: ${total}/15 — Sin depresión significativa detectada. Semáforo emocional: Verde.`;}
+  else if(total<=10){cls='amarillo';txt=`GDS-15: ${total}/15 — Probable depresión leve-moderada. Se recomienda valoración psicológica. Semáforo emocional: Amarillo.`;}
+  else{cls='rojo';txt=`GDS-15: ${total}/15 — Probable depresión severa. Requiere intervención emocional estructurada. Reportar a coordinación clínica. Semáforo emocional: Rojo.`;}
+  r.className='result-box '+cls; r.textContent=txt;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  COPY & RESET
+// ══════════════════════════════════════════════════════════════════
+function copyCurrent(){
+  let text='';
+  const p=currentPanel;
+  if(p==='barthel'){
+    const v=Object.values(S.barthel);
+    if(v.length<10){showToast('⚠ Completa los 10 ítems antes de copiar',true);return;}
+    const total=v.reduce((a,b)=>a+b,0);
+    text=`Barthel: ${total}/100\nInterpretación: ${document.getElementById('b-result').textContent}`;
+  } else if(p==='tinetti'){
+    const eqV=TINETTI_EQ_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
+    const maV=TINETTI_MA_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
+    const eq=eqV.reduce((a,b)=>a+b,0),ma=maV.reduce((a,b)=>a+b,0);
+    text=`Tinetti: ${eq+ma}/28 (Equilibrio ${eq}/16 | Marcha ${ma}/12)\nInterpretación: ${document.getElementById('t-result').textContent}`;
+  } else if(p==='glasgow'){
+    const{E,V,M}=S.glasgow;
+    if(E===null||V===null||M===null){showToast('⚠ Completa los 3 componentes',true);return;}
+    text=`Glasgow: ${E+V+M}/15 (O:${E} V:${V} M:${M})\nInterpretación: ${document.getElementById('g-result').textContent}`;
+  } else if(p==='eva'){
+    if(S.eva.score===null){showToast('⚠ Selecciona el nivel de dolor',true);return;}
+    const loc=document.getElementById('eva-loc').value||'No especificada';
+    const imp=S.eva.impact&&S.eva.impact.length?S.eva.impact.join(', '):'ninguno referido';
+    text=`EVA: ${S.eva.score}/10\nLocalización: ${loc}\nImpacta: ${imp}\nInterpretación: ${document.getElementById('eva-result').textContent}`;
+  } else if(p==='norton'){
+    const v=Object.values(S.norton);
+    if(v.length<5){showToast('⚠ Completa las 5 categorías',true);return;}
+    const total=v.reduce((a,b)=>a+b,0);
+    text=`Norton: ${total}/20 — ${document.getElementById('n-risk').textContent}\nInterpretación: ${document.getElementById('n-result').textContent}`;
+  } else if(p==='pfeiffer'){
+    const v=Object.values(S.pfeiffer);
+    if(v.length<10){showToast('⚠ Responde las 10 preguntas',true);return;}
+    const errores=v.reduce((a,b)=>a+b,0);
+    text=`Pfeiffer: ${errores} errores / 10 preguntas\nAjuste educativo: ${S.pfEdu==='bajo'?'Sí (educación básica)':'No'}\nInterpretación: ${document.getElementById('pf-result').textContent}`;
+  } else if(p==='gds'){
+    const v=Object.values(S.gds);
+    if(v.length<15){showToast('⚠ Responde las 15 preguntas',true);return;}
+    const total=v.reduce((a,b)=>a+b,0);
+    text=`GDS-15: ${total}/15\nInterpretación: ${document.getElementById('gds-result').textContent}`;
+  }
+  navigator.clipboard.writeText(text)
+    .then(()=>showToast('✓ Copiado — pega en la Sección IX del formato'))
+    .catch(()=>{
+      const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+      showToast('✓ Copiado — pega en la Sección IX del formato');
+    });
+}
+
+function resetCurrent(){
+  const p=currentPanel;
+  if(p==='glasgow') S.glasgow={E:null,V:null,M:null};
+  else if(p==='eva'){S.eva={score:null,loc:'',impact:[]};document.getElementById('eva-loc').value='';}
+  else S[p]={};
+  inits[p]();
+}
+
+function showToast(msg,warn=false){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.background=warn?'#D93025':'#202124';
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2800);
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  NAV
+// ══════════════════════════════════════════════════════════════════
+const inits={barthel:initBarthel,tinetti:initTinetti,glasgow:initGlasgow,eva:initEva,norton:initNorton,pfeiffer:initPfeiffer,gds:initGds};
+
+document.getElementById('navTabs').querySelectorAll('.nav-tab').forEach(btn=>{
+  btn.onclick=()=>{
+    document.querySelectorAll('.nav-tab').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    currentPanel=btn.dataset.panel;
+    document.getElementById('panel-'+currentPanel).classList.add('active');
+    inits[currentPanel]();
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+// ══════════════════════════════════════════════════════════════════
+//  INIT — inicializar todas las escalas al cargar
+// ══════════════════════════════════════════════════════════════════
+Object.values(inits).forEach(fn => fn());
+</script>
+</body>
+</html>
