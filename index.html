@@ -932,52 +932,238 @@ function updateGds(){
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  COPY & RESET
+//  HELPERS PARA RESUMEN EJECUTIVO CLÍNICO
+// ══════════════════════════════════════════════════════════════════
+
+// Fecha y hora de la valoración
+function fechaHora(){
+  const now=new Date();
+  return now.toLocaleDateString('es-MX',{day:'2-digit',month:'2-digit',year:'numeric'})+
+    ' '+now.toLocaleTimeString('es-MX',{hour:'2-digit',minute:'2-digit'});
+}
+
+// Línea separadora
+const SEP='─────────────────────────────────────';
+
+// Barthel: ítems con dependencia (pts < máximo posible)
+function hallazgosBarthel(){
+  const maxPts={bano:5,vestido:10,aseo:5,wc:10,desp:15,escalera:10,transf:15,aliment:10,contU:10,contF:10};
+  const labels={bano:'Baño/ducha',vestido:'Vestido',aseo:'Aseo personal',wc:'Uso del retrete',
+    desp:'Desplazamiento',escalera:'Escaleras',transf:'Transferencia',aliment:'Alimentación',
+    contU:'Continencia urinaria',contF:'Continencia fecal'};
+  const lines=[];
+  BARTHEL_DEF.forEach(item=>{
+    const pts=S.barthel[item.id];
+    if(pts===undefined) return;
+    const max=maxPts[item.id];
+    if(pts<max){
+      // Obtener el texto de la opción seleccionada
+      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+      lines.push(`  · ${labels[item.id]}: ${optText} (${pts}/${max} pts)`);
+    }
+  });
+  return lines;
+}
+
+// Tinetti: ítems con puntuación menor al máximo
+function hallazgosTinetti(){
+  const allItems=[...TINETTI_EQ_DEF,...TINETTI_MA_DEF];
+  const lines=[];
+  allItems.forEach(item=>{
+    const pts=S.tinetti[item.id];
+    if(pts===undefined) return;
+    const max=Math.max(...item.opts.map(o=>o[1]));
+    if(pts<max){
+      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+      lines.push(`  · ${item.label}: ${optText} (${pts}/${max} pts)`);
+    }
+  });
+  return lines;
+}
+
+// Glasgow: componentes no perfectos (< máximo)
+function hallazgosGlasgow(){
+  const{E,V,M}=S.glasgow;
+  const lines=[];
+  if(E!==null&&E<4) lines.push(`  · Apertura ocular: ${GLASGOW_DEF[0].opts.find(o=>o[1]===E)?.[0]} (E:${E}/4)`);
+  if(V!==null&&V<5) lines.push(`  · Respuesta verbal: ${GLASGOW_DEF[1].opts.find(o=>o[1]===V)?.[0]} (V:${V}/5)`);
+  if(M!==null&&M<6) lines.push(`  · Respuesta motora: ${GLASGOW_DEF[2].opts.find(o=>o[1]===M)?.[0]} (M:${M}/6)`);
+  return lines;
+}
+
+// Norton: categorías con puntuación ≤ 2 (riesgo relevante)
+function hallazgosNorton(){
+  const labels={nc:'Condición física',nm:'Estado mental',na:'Actividad',nmo:'Movilidad',ni:'Incontinencia'};
+  const lines=[];
+  NORTON_DEF.forEach(item=>{
+    const pts=S.norton[item.id];
+    if(pts===undefined) return;
+    if(pts<=2){
+      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+      lines.push(`  · ${labels[item.id]}: ${optText} (${pts}/4)`);
+    }
+  });
+  return lines;
+}
+
+// Pfeiffer: preguntas respondidas incorrectamente
+function hallazgosPfeiffer(){
+  const lines=[];
+  PFEIFFER_DEF.forEach((q,i)=>{
+    const id='pf'+i;
+    if(S.pfeiffer[id]===1) lines.push(`  · Error en: ${q}`);
+  });
+  return lines;
+}
+
+// GDS-15: preguntas que suman punto (respuestas que indican depresión)
+function hallazgosGds(){
+  const lines=[];
+  GDS_DEF.forEach((item,i)=>{
+    const id='gds'+i;
+    if(S.gds[id]===1) lines.push(`  · "${item.q}" → ${item.pts}`);
+  });
+  return lines;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  COPY — RESUMEN EJECUTIVO CLÍNICO
 // ══════════════════════════════════════════════════════════════════
 function copyCurrent(){
-  let text='';
   const p=currentPanel;
+  const fecha=fechaHora();
+  let lines=[];
+
   if(p==='barthel'){
     const v=Object.values(S.barthel);
     if(v.length<10){showToast('⚠ Completa los 10 ítems antes de copiar',true);return;}
     const total=v.reduce((a,b)=>a+b,0);
-    text=`Barthel: ${total}/100\nInterpretación: ${document.getElementById('b-result').textContent}`;
+    const hallazgos=hallazgosBarthel();
+    lines=[
+      `BARTHEL — ${fecha}`,
+      SEP,
+      `Puntaje: ${total}/100`,
+      document.getElementById('b-result').textContent,
+      '',
+      hallazgos.length
+        ? `Ítems con dependencia (${hallazgos.length} de 10):`
+        : 'Sin dependencia detectada en ningún ítem.',
+      ...hallazgos,
+    ];
+
   } else if(p==='tinetti'){
     const eqV=TINETTI_EQ_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
     const maV=TINETTI_MA_DEF.map(i=>S.tinetti[i.id]).filter(v=>v!==undefined);
+    if(eqV.length<10||maV.length<10){showToast('⚠ Completa todos los ítems antes de copiar',true);return;}
     const eq=eqV.reduce((a,b)=>a+b,0),ma=maV.reduce((a,b)=>a+b,0);
-    text=`Tinetti: ${eq+ma}/28 (Equilibrio ${eq}/16 | Marcha ${ma}/12)\nInterpretación: ${document.getElementById('t-result').textContent}`;
+    const hallazgos=hallazgosTinetti();
+    lines=[
+      `TINETTI — ${fecha}`,
+      SEP,
+      `Puntaje: ${eq+ma}/28  (Equilibrio ${eq}/16 | Marcha ${ma}/12)`,
+      document.getElementById('t-result').textContent,
+      '',
+      hallazgos.length
+        ? `Ítems con alteración (${hallazgos.length} de 20):`
+        : 'Sin alteraciones en equilibrio ni marcha.',
+      ...hallazgos,
+    ];
+
   } else if(p==='glasgow'){
     const{E,V,M}=S.glasgow;
     if(E===null||V===null||M===null){showToast('⚠ Completa los 3 componentes',true);return;}
-    text=`Glasgow: ${E+V+M}/15 (O:${E} V:${V} M:${M})\nInterpretación: ${document.getElementById('g-result').textContent}`;
+    const hallazgos=hallazgosGlasgow();
+    lines=[
+      `GLASGOW — ${fecha}`,
+      SEP,
+      `Puntaje: ${E+V+M}/15  (O:${E}  V:${V}  M:${M})`,
+      document.getElementById('g-result').textContent,
+      '',
+      hallazgos.length
+        ? 'Componentes con alteración:'
+        : 'Los 3 componentes en valores máximos (15/15).',
+      ...hallazgos,
+    ];
+
   } else if(p==='eva'){
     if(S.eva.score===null){showToast('⚠ Selecciona el nivel de dolor',true);return;}
     const loc=document.getElementById('eva-loc').value||'No especificada';
-    const imp=S.eva.impact&&S.eva.impact.length?S.eva.impact.join(', '):'ninguno referido';
-    text=`EVA: ${S.eva.score}/10\nLocalización: ${loc}\nImpacta: ${imp}\nInterpretación: ${document.getElementById('eva-result').textContent}`;
+    const imp=S.eva.impact&&S.eva.impact.length?S.eva.impact.join(', '):'Ninguno referido';
+    lines=[
+      `EVA DOLOR — ${fecha}`,
+      SEP,
+      `Puntaje: ${S.eva.score}/10`,
+      document.getElementById('eva-result').textContent,
+      '',
+      `Localización: ${loc}`,
+      `Impacta: ${imp}`,
+    ];
+
   } else if(p==='norton'){
     const v=Object.values(S.norton);
     if(v.length<5){showToast('⚠ Completa las 5 categorías',true);return;}
     const total=v.reduce((a,b)=>a+b,0);
-    text=`Norton: ${total}/20 — ${document.getElementById('n-risk').textContent}\nInterpretación: ${document.getElementById('n-result').textContent}`;
+    const hallazgos=hallazgosNorton();
+    lines=[
+      `NORTON — ${fecha}`,
+      SEP,
+      `Puntaje: ${total}/20 — ${document.getElementById('n-risk').textContent}`,
+      document.getElementById('n-result').textContent,
+      '',
+      hallazgos.length
+        ? `Factores de riesgo relevantes (puntuación ≤ 2):`
+        : 'Sin factores de riesgo relevantes (todas las categorías ≥ 3).',
+      ...hallazgos,
+    ];
+
   } else if(p==='pfeiffer'){
     const v=Object.values(S.pfeiffer);
     if(v.length<10){showToast('⚠ Responde las 10 preguntas',true);return;}
     const errores=v.reduce((a,b)=>a+b,0);
-    text=`Pfeiffer: ${errores} errores / 10 preguntas\nAjuste educativo: ${S.pfEdu==='bajo'?'Sí (educación básica)':'No'}\nInterpretación: ${document.getElementById('pf-result').textContent}`;
+    const hallazgos=hallazgosPfeiffer();
+    lines=[
+      `PFEIFFER — ${fecha}`,
+      SEP,
+      `Errores: ${errores}/10`,
+      `Ajuste educativo: ${S.pfEdu==='bajo'?'Aplicado (educación básica o menos)':'No aplicado'}`,
+      document.getElementById('pf-result').textContent,
+      '',
+      hallazgos.length
+        ? `Preguntas respondidas incorrectamente (${hallazgos.length}):`
+        : 'Sin errores — todas las preguntas respondidas correctamente.',
+      ...hallazgos,
+    ];
+
   } else if(p==='gds'){
     const v=Object.values(S.gds);
     if(v.length<15){showToast('⚠ Responde las 15 preguntas',true);return;}
     const total=v.reduce((a,b)=>a+b,0);
-    text=`GDS-15: ${total}/15\nInterpretación: ${document.getElementById('gds-result').textContent}`;
+    const hallazgos=hallazgosGds();
+    lines=[
+      `GDS-15 — ${fecha}`,
+      SEP,
+      `Puntaje: ${total}/15`,
+      document.getElementById('gds-result').textContent,
+      '',
+      hallazgos.length
+        ? `Respuestas que indican depresión (${hallazgos.length} de 15):`
+        : 'Sin respuestas indicativas de depresión.',
+      ...hallazgos,
+    ];
   }
+
+  if(!lines.length) return;
+  const text=lines.join('\n');
+
   navigator.clipboard.writeText(text)
-    .then(()=>showToast('✓ Copiado — pega en la Sección IX del formato'))
+    .then(()=>showToast('✓ Resumen copiado — pega en notas de evolución'))
     .catch(()=>{
-      const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
-      document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
-      showToast('✓ Copiado — pega en la Sección IX del formato');
+      const ta=document.createElement('textarea');
+      ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      showToast('✓ Resumen copiado — pega en notas de evolución');
     });
 }
 
