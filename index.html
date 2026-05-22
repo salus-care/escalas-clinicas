@@ -546,44 +546,134 @@ body {
 
 <script>
 // ══════════════════════════════════════════════════════════════════
-//  DATOS
+//  DATOS — Basados en formatos institucionales GER-CLI-PNO-08-FC
 // ══════════════════════════════════════════════════════════════════
+
+// BARTHEL — GER-CLI-PNO-08-FC-04
 const BARTHEL_DEF = [
-  {id:'bano',    label:'Baño / ducha',              opts:[['Independiente (sin supervisión)',5],['Dependiente',0]]},
-  {id:'vestido', label:'Vestido y calzado',          opts:[['Independiente',10],['Necesita ayuda pero hace más del 50%',5],['Dependiente',0]]},
-  {id:'aseo',    label:'Aseo personal (cara, dientes, peinado)', opts:[['Independiente (incluye accesorios)',5],['Dependiente',0]]},
-  {id:'wc',      label:'Uso del retrete',            opts:[['Independiente',10],['Necesita ayuda',5],['Dependiente',0]]},
-  {id:'desp',    label:'Desplazamiento (marcha)',     opts:[['Independiente ≥ 50 m (puede usar bastón)',15],['Ayuda verbal o supervisión ≥ 50 m',10],['Independiente en silla de ruedas ≥ 50 m',5],['Dependiente',0]]},
-  {id:'escalera',label:'Subir y bajar escaleras',    opts:[['Independiente',10],['Necesita ayuda o supervisión',5],['Dependiente',0]]},
-  {id:'transf',  label:'Transferencia silla–cama',   opts:[['Independiente',15],['Supervisión o pequeña ayuda',10],['Requiere gran ayuda de una persona',5],['Dependiente (no mantiene sedestación)',0]]},
-  {id:'aliment', label:'Alimentación',               opts:[['Independiente (incluye cortar y untar)',10],['Necesita ayuda (cortar, untar, etc.)',5],['Dependiente',0]]},
-  {id:'contU',   label:'Continencia urinaria',       opts:[['Continente (o sondaje autogestionado)',10],['Accidente ocasional (1×semana o sondaje con ayuda)',5],['Incontinente',0]]},
-  {id:'contF',   label:'Continencia fecal',          opts:[['Continente',10],['Accidente ocasional (1×semana)',5],['Incontinente',0]]},
+  {id:'comida',   label:'Comida',
+    opts:[
+      ['Independiente. Capaz de comer por sí solo en tiempo razonable. La comida puede ser cocinada y servida por otra persona.',10],
+      ['Necesita ayuda para cortar la carne, extender la mantequilla, pero capaz de comer solo.',5],
+      ['Dependiente. Necesita ser alimentado por otra persona.',0]
+    ]},
+  {id:'aseo',     label:'Aseo Personal',
+    opts:[
+      ['Independiente. Capaz de lavarse entero, de entrar y salir del baño sin ayuda y de hacerlo sin que una persona supervise.',5],
+      ['Dependiente. Necesita ayuda para las mismas.',0]
+    ]},
+  {id:'vestido',  label:'Vestido',
+    opts:[
+      ['Independiente. Capaz de ponerse y quitarse la ropa sin ayuda.',10],
+      ['Necesita ayuda. Realiza sin ayuda más de la mitad de estas tareas en tiempo razonable.',5],
+      ['Dependiente. Necesita ayuda para las mismas.',0]
+    ]},
+  {id:'arreglo',  label:'Arreglo Personal',
+    opts:[
+      ['Independiente. Realiza todas las actividades personales sin ayuda alguna; los complementos necesarios pueden ser provistos por alguna persona.',5],
+      ['Dependiente. Necesita alguna ayuda.',0]
+    ]},
+  {id:'deposicion',label:'Deposición (valore la semana pasada)',
+    opts:[
+      ['Continente. No presenta episodios de incontinencia.',10],
+      ['Accidente ocasional. Presenta un máximo de un episodio en 24 horas o requiere ayuda para la manipulación de sondas o de otros dispositivos.',5],
+      ['Incontinente. Más de un episodio semanal.',0]
+    ]},
+  {id:'miccion',  label:'Micción (valore la semana pasada)',
+    opts:[
+      ['Continente. No presenta episodios. Capaz de utilizar cualquier dispositivo por sí solo (Botella, Sonda, Orinal…).',10],
+      ['Accidente Ocasional. Presenta un máximo de un episodio en 24 horas o requiere ayuda para la manipulación de sondas o de otros dispositivos.',5],
+      ['Incontinente. Más de un episodio en 24 horas.',0]
+    ]},
+  {id:'wc',       label:'Ir al W.C.',
+    opts:[
+      ['Independiente. Entra y sale solo, no necesita ayuda alguna por parte de otra persona.',10],
+      ['Necesita Ayuda. Capaz de manejarse con una pequeña ayuda; es capaz de usar el cuarto de baño. Puede limpiarse solo.',5],
+      ['Dependiente. Incapaz de acceder a él o de utilizarlo sin ayuda mayor.',0]
+    ]},
+  {id:'transf',   label:'Transferencia Traslado cama / sillón',
+    opts:[
+      ['Independiente. No requiere ayuda para sentarse o levantarse de una silla ni para entrar o salir de la cama.',15],
+      ['Mínima ayuda. Incluye una supervisión o una pequeña ayuda física.',10],
+      ['Gran Ayuda. Precisa ayuda de una persona fuerte o entrenada.',5],
+      ['Dependiente. Necesita grúa o alzamiento por dos personas. Incapaz de permanecer sentado.',0]
+    ]},
+  {id:'deamb',    label:'Deambulación',
+    opts:[
+      ['Independiente. Puede andar 50 metros o su equivalente en casa sin ayuda ni supervisión. Puede utilizar cualquier ayuda mecánica excepto un andador. Si utiliza una prótesis, puede ponérsela y quitársela solo.',15],
+      ['Necesita Ayuda. Necesita supervisión o una pequeña ayuda física por parte de otra persona o utiliza andador.',10],
+      ['Independiente en silla de ruedas. No requiere.',5],
+      ['Dependiente. Necesita grúa o alzamiento por dos personas. Incapaz de permanecer sentado.',0]
+    ]},
+  {id:'escaleras',label:'Subir y Bajar Escaleras',
+    opts:[
+      ['Independiente. Capaz de subir y bajar un piso sin ayuda ni supervisión de otra persona.',10],
+      ['Necesita Ayuda o Supervisión.',5],
+      ['Dependiente. Es incapaz de salvar escalones.',0]
+    ]},
 ];
 
-const TINETTI_EQ_DEF = [
-  {id:'te1',label:'Equilibrio sentado',             opts:[['Se inclina o desliza',0],['Estable y seguro',1]]},
-  {id:'te2',label:'Levantarse de la silla',          opts:[['Incapaz sin ayuda',0],['Capaz, usa brazos o más de 1 intento',1],['Capaz de un solo intento sin usar brazos',2]]},
-  {id:'te3',label:'Intentos para levantarse',        opts:[['Incapaz sin ayuda',0],['Capaz pero requiere más de 1 intento',1],['Capaz a la primera',2]]},
-  {id:'te4',label:'Equilibrio inmediato (primeros 5 s)', opts:[['Inestable (tambalea, mueve pies, marcado balanceo)',0],['Estable con apoyo o bastón',1],['Estable sin apoyo',2]]},
-  {id:'te5',label:'Equilibrio de pie (ojos abiertos)', opts:[['Inestable',0],['Estable con apoyo amplio o bastón',1],['Estable sin ayuda, base estrecha',2]]},
-  {id:'te6',label:'Prueba de empuje (esternón ×3)', opts:[['Cae',0],['Agarra o tambalea y se agarra',1],['Estable',2]]},
-  {id:'te7',label:'Equilibrio con ojos cerrados',    opts:[['Inestable',0],['Estable',1]]},
-  {id:'te8',label:'Giro 360° — continuidad',         opts:[['Pasos discontinuos',0],['Pasos continuos',1]]},
-  {id:'te9',label:'Giro 360° — estabilidad',         opts:[['Inestable (agarra, tambalea)',0],['Estable',1]]},
-  {id:'te10',label:'Sentarse',                       opts:[['Inseguro (cae, distancia mal calculada)',0],['Usa brazos o movimiento brusco',1],['Seguro y suave',2]]},
-];
+// TINETTI MARCHA — GER-CLI-PNO-08-FC-03 (página 1, max 12 pts)
 const TINETTI_MA_DEF = [
-  {id:'tm1',label:'Inicio de la marcha',             opts:[['Duda o varios intentos',0],['Sin duda, inicio fluido',1]]},
-  {id:'tm2',label:'Longitud del paso — pie derecho', opts:[['Pie D no sobrepasa al I',0],['Pie D sobrepasa al I',1]]},
-  {id:'tm3',label:'Altura del paso — pie derecho',   opts:[['Pie D no se eleva del suelo',0],['Pie D se eleva claramente',1]]},
-  {id:'tm4',label:'Longitud del paso — pie izquierdo',opts:[['Pie I no sobrepasa al D',0],['Pie I sobrepasa al D',1]]},
-  {id:'tm5',label:'Altura del paso — pie izquierdo', opts:[['Pie I no se eleva del suelo',0],['Pie I se eleva claramente',1]]},
-  {id:'tm6',label:'Simetría del paso',               opts:[['Longitud derecha ≠ izquierda',0],['Longitud derecha ≈ izquierda',1]]},
-  {id:'tm7',label:'Continuidad de los pasos',        opts:[['Pauses o discontinuidad',0],['Pasos continuos',1]]},
-  {id:'tm8',label:'Trayectoria (3 metros)',           opts:[['Desviación marcada',0],['Desviación leve o usa ayuda',1],['Sin desviación y sin ayuda',2]]},
-  {id:'tm9',label:'Tronco durante la marcha',        opts:[['Balanceo marcado o usa ayuda',0],['Rodillas o espalda flexionadas, brazos separados',1],['Sin balanceo, sin flexión, sin uso de brazos',2]]},
-  {id:'tm10',label:'Distancia entre talones (base)', opts:[['Talones muy separados',0],['Talones casi juntos al caminar',1]]},
+  {id:'tm1', label:'1. Iniciación de la marcha',
+    opts:[['Algunas vacilaciones o múltiples intentos para empezar.',0],['No vacila.',1]]},
+  {id:'tm2a',label:'2.1 Movimiento pie derecho — Longitud',
+    opts:[['No sobrepasa el pie izquierdo, con el paso.',0],['Sobrepasa el pie izquierdo.',1]]},
+  {id:'tm2b',label:'2.1 Movimiento pie derecho — Altura',
+    opts:[['El pie derecho, no se separa completamente del suelo con el paso.',0],['El pie derecho, se separa completamente del suelo.',1]]},
+  {id:'tm3a',label:'2.2 Movimiento pie izquierdo — Longitud',
+    opts:[['No sobrepasa el pie izquierdo, con el paso.',0],['Sobrepasa el pie derecho.',1]]},
+  {id:'tm3b',label:'2.2 Movimiento pie izquierdo — Altura',
+    opts:[['El pie izquierdo no se separa completamente del suelo con el paso.',0],['El pie izquierdo se separa completamente del suelo.',1]]},
+  {id:'tm4', label:'3. Simetría del paso',
+    opts:[['La longitud de los pasos con los pies izquierdo y derecho no es igual.',0],['La longitud parece igual.',1]]},
+  {id:'tm5', label:'4. Fluidez del paso',
+    opts:[['Paradas entre los pasos.',0],['Los pasos parecen continuos.',1]]},
+  {id:'tm6', label:'5. Camino*',
+    opts:[['Desviación grave de la trayectoria.',0],['Leve/moderada desviación o usa ayudas para mantener la trayectoria.',1],['Sin desviación o uso de ayudas.',2]]},
+  {id:'tm7', label:'6. Tronco',
+    opts:[['Balanceo marcado o uso de ayudas.',0],['No se balancea al caminar pero flexiona las rodillas o la espalda, o separa los brazos al caminar.',1],['No se balancea ni flexiona ni usa otras ayudas al caminar.',2]]},
+  {id:'tm8', label:'7. Base de sustentación',
+    opts:[['Talones muy separados.',0],['Talones casi juntos al caminar.',1]]},
+];
+
+// TINETTI EQUILIBRIO — GER-CLI-PNO-08-FC-03 (página 2, max 16 pts)
+const TINETTI_EQ_DEF = [
+  {id:'te1', label:'1. Equilibrio sentado',
+    opts:[['Se inclina o se desliza en la silla.',0],['Se mantiene seguro.',1]]},
+  {id:'te2', label:'2. Levantarse de la silla',
+    opts:[['Incapaz sin Ayuda.',0],['Capaz pero usa los brazos para ayudarse.',1],['Capaz sin usar los brazos.',2]]},
+  {id:'te3', label:'3. Intentos para levantarse de la silla',
+    opts:[['Incapaz sin ayuda.',0],['Capaz pero necesita más de un intento.',1],['Capaz de levantarse en un intento.',2]]},
+  {id:'te4', label:'4. Equilibrio inmediato al levantarse (prim. 5 seg.)',
+    opts:[['Inestable (mueve los pies, oscilación del torso).',0],['Constante pero utiliza el equipo u otro soporte.',1],['Constante sin el equipo u otro tipo de apoyo.',2]]},
+  {id:'te5', label:'5. Equilibrio en bipedestación',
+    opts:[['Inestable.',0],['Estable con apoyo amplio (talones separados más de 10 cm) y usa bastón u otros apoyos.',1],['Estable sin andador u otros apoyos.',2]]},
+  {id:'te6', label:'6. Presión en esternón (empuja ligeramente 3 veces)',
+    opts:[['Empieza a caerse.',0],['Se tambalea, se agarra, pero se mantiene.',1],['Estable.',2]]},
+  {id:'te7', label:'7. Ojos cerrados bipedestación',
+    opts:[['Inestable.',0],['Estable.',1]]},
+  {id:'te8a',label:'8. Vuelta de 360° — Continuidad de pasos',
+    opts:[['Pasos discontinuos.',0],['Continuos.',1]]},
+  {id:'te8b',label:'8. Vuelta de 360° — Estabilidad',
+    opts:[['Inestable (se tambalea o se agarra).',0],['Estable.',1]]},
+  {id:'te9', label:'9. Sentarse en la silla',
+    opts:[['Inseguro (no mide la distancia, se deja caer).',0],['Inseguro, calcula mal la distancia, se cae en la silla.',1],['Seguro, movimiento suave.',2]]},
+];
+
+// PFEIFFER SPMQ-E — GER-CLI-PNO-08-FC-05
+// Incluye criterios de corrección exactos del formato institucional
+const PFEIFFER_DEF = [
+  {q:'¿Qué fecha es hoy? (día / mes / año)',              crit:'Correcta solo cuando se diga el día, mes y año exacto.'},
+  {q:'¿Qué día de la semana es hoy?',                     crit:'Correcta cuando diga el día exacto que sea.'},
+  {q:'¿Cuál es el nombre de este lugar o edificio?',      crit:'Correcta si dice alguna descripción del lugar (Policlínico, Hospital, Hogar, consulta, nombre de la Universidad, entre otras).'},
+  {q:'¿Cuál es su número de teléfono? (Si no tiene número, realizar la pregunta 4A: ¿Cuál es su dirección?)', crit:'Correcta si se puede confirmar el número o si lo repite otra vez igual durante otro momento de la entrevista.'},
+  {q:'¿Qué edad tiene usted?',                            crit:'Correcta si se puede confirmar el número o si lo repite otra vez igual durante otro momento de la entrevista.'},
+  {q:'¿En qué fecha nació? (día/mes/año)',                 crit:'Correcta solo con la fecha del día, mes y año exacto.'},
+  {q:'¿Cuál es el Presidente de México actualmente?',     crit:'Basta con el apellido del Presidente.'},
+  {q:'¿Cuál es el Presidente anterior?',                  crit:'Será suficiente con el apellido del Presidente.'},
+  {q:'¿Cuál es el apellido de su madre?',                 crit:'No necesita ser verificada, basta con lo que sale en la ficha clínica.'},
+  {q:'A 20 réstele 3 y continúa restando 3 a cada resultado, hasta el final (20-17-14-12-11-8-5-2)', crit:'Correcta solo si toda la serie es correcta (20-17-14-11-8-5-2).'},
 ];
 
 const GLASGOW_DEF = [
@@ -598,19 +688,6 @@ const NORTON_DEF = [
   {id:'na', label:'Actividad física',         opts:[['Deambula sin ayuda',4],['Deambula con ayuda',3],['Limitado a silla de ruedas',2],['En cama',1]]},
   {id:'nmo',label:'Movilidad',                opts:[['Total (sin limitación)',4],['Ligeramente limitada',3],['Muy limitada',2],['Inmóvil',1]]},
   {id:'ni', label:'Incontinencia',            opts:[['Ninguna',4],['Ocasional urinaria',3],['Urinaria habitual',2],['Doble (urinaria + fecal)',1]]},
-];
-
-const PFEIFFER_DEF = [
-  '¿Cuál es la fecha de hoy? (día, mes y año)',
-  '¿Qué día de la semana es hoy?',
-  '¿Cómo se llama este lugar?',
-  '¿Cuál es su número de teléfono? (o su dirección si no tiene teléfono)',
-  '¿Cuántos años tiene usted?',
-  '¿Cuándo nació? (fecha de nacimiento)',
-  '¿Quién es el presidente o jefe de gobierno de México actualmente?',
-  '¿Quién fue el presidente antes de él?',
-  '¿Cuál es el primer apellido de su mamá?',
-  'Reste de 3 en 3 comenzando desde 20 (20, 17, 14...)',
 ];
 
 const GDS_DEF = [
@@ -846,10 +923,11 @@ function updateNorton(){
 // ══════════════════════════════════════════════════════════════════
 function initPfeiffer(){
   const c=document.getElementById('pf-items-list'); c.innerHTML='';
-  PFEIFFER_DEF.forEach((q,i)=>{
+  PFEIFFER_DEF.forEach((item,i)=>{
     const id='pf'+i;
     const card=document.createElement('div');card.className='pf-item';
-    card.innerHTML=`<div class="pf-q"><span style="font-family:'DM Mono',monospace;color:#0097B2;font-weight:600">${i+1}.</span> ${q}</div>`;
+    card.innerHTML=`<div class="pf-q"><span style="font-family:'DM Mono',monospace;color:#0097B2;font-weight:600">${i+1}.</span> ${item.q}</div>
+      <div style="font-size:11px;color:#5F6368;margin-bottom:8px;line-height:1.4;padding-left:4px">📋 ${item.crit}</div>`;
     const btns=document.createElement('div');btns.className='pf-btns';
     [['✓ Correcta','correct'],['✗ Incorrecta','incorrect']].forEach(([label,type])=>{
       const btn=document.createElement('button');
@@ -946,82 +1024,92 @@ function fechaHora(){
 const SEP='─────────────────────────────────────';
 
 // Barthel: ítems con dependencia (pts < máximo posible)
+// ── Barthel: TODOS los ítems con su resultado
 function hallazgosBarthel(){
-  const maxPts={bano:5,vestido:10,aseo:5,wc:10,desp:15,escalera:10,transf:15,aliment:10,contU:10,contF:10};
-  const labels={bano:'Baño/ducha',vestido:'Vestido',aseo:'Aseo personal',wc:'Uso del retrete',
-    desp:'Desplazamiento',escalera:'Escaleras',transf:'Transferencia',aliment:'Alimentación',
-    contU:'Continencia urinaria',contF:'Continencia fecal'};
+  const maxPts={comida:10,aseo:5,vestido:10,arreglo:5,deposicion:10,miccion:10,wc:10,transf:15,deamb:15,escaleras:10};
   const lines=[];
   BARTHEL_DEF.forEach(item=>{
     const pts=S.barthel[item.id];
     if(pts===undefined) return;
     const max=maxPts[item.id];
-    if(pts<max){
-      // Obtener el texto de la opción seleccionada
-      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
-      lines.push(`  · ${labels[item.id]}: ${optText} (${pts}/${max} pts)`);
-    }
+    const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+    const estado=pts===max?'✓ Independiente':'⚠ Con dependencia';
+    lines.push(`  ${estado} | ${item.label}: ${optText} (${pts}/${max})`);
   });
   return lines;
 }
 
-// Tinetti: ítems con puntuación menor al máximo
+// ── Tinetti: TODOS los ítems con su resultado
 function hallazgosTinetti(){
-  const allItems=[...TINETTI_EQ_DEF,...TINETTI_MA_DEF];
+  const allItems=[...TINETTI_MA_DEF,...TINETTI_EQ_DEF];
   const lines=[];
   allItems.forEach(item=>{
     const pts=S.tinetti[item.id];
     if(pts===undefined) return;
     const max=Math.max(...item.opts.map(o=>o[1]));
-    if(pts<max){
-      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
-      lines.push(`  · ${item.label}: ${optText} (${pts}/${max} pts)`);
-    }
+    const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+    const estado=pts===max?'✓ Normal':'⚠ Alterado';
+    lines.push(`  ${estado} | ${item.label}: ${optText} (${pts}/${max})`);
   });
   return lines;
 }
 
-// Glasgow: componentes no perfectos (< máximo)
+// ── Glasgow: todos los componentes
 function hallazgosGlasgow(){
   const{E,V,M}=S.glasgow;
   const lines=[];
-  if(E!==null&&E<4) lines.push(`  · Apertura ocular: ${GLASGOW_DEF[0].opts.find(o=>o[1]===E)?.[0]} (E:${E}/4)`);
-  if(V!==null&&V<5) lines.push(`  · Respuesta verbal: ${GLASGOW_DEF[1].opts.find(o=>o[1]===V)?.[0]} (V:${V}/5)`);
-  if(M!==null&&M<6) lines.push(`  · Respuesta motora: ${GLASGOW_DEF[2].opts.find(o=>o[1]===M)?.[0]} (M:${M}/6)`);
+  if(E!==null){
+    const txt=GLASGOW_DEF[0].opts.find(o=>o[1]===E)?.[0]||'';
+    lines.push(`  ${E===4?'✓ Normal':'⚠ Alterado'} | Apertura ocular: ${txt} (E:${E}/4)`);
+  }
+  if(V!==null){
+    const txt=GLASGOW_DEF[1].opts.find(o=>o[1]===V)?.[0]||'';
+    lines.push(`  ${V===5?'✓ Normal':'⚠ Alterado'} | Respuesta verbal: ${txt} (V:${V}/5)`);
+  }
+  if(M!==null){
+    const txt=GLASGOW_DEF[2].opts.find(o=>o[1]===M)?.[0]||'';
+    lines.push(`  ${M===6?'✓ Normal':'⚠ Alterado'} | Respuesta motora: ${txt} (M:${M}/6)`);
+  }
   return lines;
 }
 
-// Norton: categorías con puntuación ≤ 2 (riesgo relevante)
+// ── Norton: todas las categorías
 function hallazgosNorton(){
   const labels={nc:'Condición física',nm:'Estado mental',na:'Actividad',nmo:'Movilidad',ni:'Incontinencia'};
   const lines=[];
   NORTON_DEF.forEach(item=>{
     const pts=S.norton[item.id];
     if(pts===undefined) return;
-    if(pts<=2){
-      const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
-      lines.push(`  · ${labels[item.id]}: ${optText} (${pts}/4)`);
-    }
+    const optText=item.opts.find(o=>o[1]===pts)?.[0]||'';
+    const estado=pts===4?'✓ Sin riesgo':pts===3?'⚠ Leve':'⚠ Riesgo';
+    lines.push(`  ${estado} | ${labels[item.id]}: ${optText} (${pts}/4)`);
   });
   return lines;
 }
 
-// Pfeiffer: preguntas respondidas incorrectamente
+// ── Pfeiffer: todas las preguntas con resultado
 function hallazgosPfeiffer(){
   const lines=[];
-  PFEIFFER_DEF.forEach((q,i)=>{
+  PFEIFFER_DEF.forEach((item,i)=>{
     const id='pf'+i;
-    if(S.pfeiffer[id]===1) lines.push(`  · Error en: ${q}`);
+    const val=S.pfeiffer[id];
+    if(val===undefined) return;
+    const estado=val===0?'✓ Correcta':'✗ Incorrecta';
+    lines.push(`  ${estado} | P${i+1}: ${item.q}`);
   });
   return lines;
 }
 
-// GDS-15: preguntas que suman punto (respuestas que indican depresión)
+// ── GDS-15: todas las respuestas
 function hallazgosGds(){
   const lines=[];
   GDS_DEF.forEach((item,i)=>{
     const id='gds'+i;
-    if(S.gds[id]===1) lines.push(`  · "${item.q}" → ${item.pts}`);
+    const val=S.gds[id];
+    if(val===undefined) return;
+    const respuesta=val===1?item.pts:(item.pts==='Sí'?'No':'Sí');
+    const estado=val===1?'⚠ Suma punto':'✓ Sin punto';
+    lines.push(`  ${estado} | P${i+1}: "${item.q}" → ${respuesta}`);
   });
   return lines;
 }
@@ -1045,9 +1133,7 @@ function copyCurrent(){
       `Puntaje: ${total}/100`,
       document.getElementById('b-result').textContent,
       '',
-      hallazgos.length
-        ? `Ítems con dependencia (${hallazgos.length} de 10):`
-        : 'Sin dependencia detectada en ningún ítem.',
+      `Detalle por ítem (✓ independiente / ⚠ con dependencia):`,
       ...hallazgos,
     ];
 
@@ -1063,9 +1149,7 @@ function copyCurrent(){
       `Puntaje: ${eq+ma}/28  (Equilibrio ${eq}/16 | Marcha ${ma}/12)`,
       document.getElementById('t-result').textContent,
       '',
-      hallazgos.length
-        ? `Ítems con alteración (${hallazgos.length} de 20):`
-        : 'Sin alteraciones en equilibrio ni marcha.',
+      `Detalle por ítem — Marcha (✓ normal / ⚠ alterado):`,
       ...hallazgos,
     ];
 
@@ -1079,9 +1163,7 @@ function copyCurrent(){
       `Puntaje: ${E+V+M}/15  (O:${E}  V:${V}  M:${M})`,
       document.getElementById('g-result').textContent,
       '',
-      hallazgos.length
-        ? 'Componentes con alteración:'
-        : 'Los 3 componentes en valores máximos (15/15).',
+      `Detalle por componente (✓ normal / ⚠ alterado)`,
       ...hallazgos,
     ];
 
@@ -1110,9 +1192,7 @@ function copyCurrent(){
       `Puntaje: ${total}/20 — ${document.getElementById('n-risk').textContent}`,
       document.getElementById('n-result').textContent,
       '',
-      hallazgos.length
-        ? `Factores de riesgo relevantes (puntuación ≤ 2):`
-        : 'Sin factores de riesgo relevantes (todas las categorías ≥ 3).',
+      `Detalle por categoría (✓ sin riesgo / ⚠ riesgo):`,
       ...hallazgos,
     ];
 
@@ -1128,9 +1208,7 @@ function copyCurrent(){
       `Ajuste educativo: ${S.pfEdu==='bajo'?'Aplicado (educación básica o menos)':'No aplicado'}`,
       document.getElementById('pf-result').textContent,
       '',
-      hallazgos.length
-        ? `Preguntas respondidas incorrectamente (${hallazgos.length}):`
-        : 'Sin errores — todas las preguntas respondidas correctamente.',
+      `Detalle por pregunta (✓ correcta / ✗ incorrecta):`,
       ...hallazgos,
     ];
 
@@ -1145,9 +1223,7 @@ function copyCurrent(){
       `Puntaje: ${total}/15`,
       document.getElementById('gds-result').textContent,
       '',
-      hallazgos.length
-        ? `Respuestas que indican depresión (${hallazgos.length} de 15):`
-        : 'Sin respuestas indicativas de depresión.',
+      `Detalle por pregunta (✓ sin punto / ⚠ suma punto):`,
       ...hallazgos,
     ];
   }
